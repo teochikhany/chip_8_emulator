@@ -1,0 +1,12 @@
+ram
+    read and write to the ram
+    the ram should is 4096 size
+    the first ~200 bytes are reserved, look at documentation
+    the 36 instruction
+
+cpu
+    all 16 registers
+    program counter
+    the stack
+    i register
+
