@@ -53,4 +53,20 @@ impl Ram
 
         return result;
     }
+
+    pub fn write(& mut self, start: u8, size: u8, data: &Vec<u8>)
+    {
+        if size != data.len() as u8
+        {
+            panic!("not same size");
+        }
+
+        let mut j = 0;
+        for i in start .. start + size
+        {
+            let i = i as usize;
+            self.memory[i] = data[j];
+            j += 1;
+        }
+    }
 }
