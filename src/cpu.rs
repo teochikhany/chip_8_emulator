@@ -35,6 +35,7 @@ impl Cpu
         return self.vx[register_index as usize];
     }
 
+    #[allow(dead_code)] // TODO: remove this later if not used
     pub fn debug(&self)
     {
         println!("\nCpu Stats");

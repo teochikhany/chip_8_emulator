@@ -59,6 +59,7 @@ impl Ram
         return self.memory[start as usize];
     }
 
+    #[allow(dead_code)] // TODO: remove this later if not used
     pub fn write(& mut self, start: u8, size: u8, data: &Vec<u8>)
     {
         if size != data.len() as u8
