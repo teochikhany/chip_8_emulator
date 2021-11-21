@@ -1,3 +1,5 @@
+extern crate rand;
+
 use crate::ram::Ram;
 
 pub const PROGRAM_START: u16 = 0x200;
@@ -175,18 +177,30 @@ impl Cpu
                 }
             },
 
-            0x9 => println!("0x9"), 
-            0xA => println!("0xA"), 
-            0xB => println!("0xB"), 
-            0xC => println!("0xC"), 
-            0xD => println!("0xD"), 
+            0x9 => 
+            {
+                // SNE Vx, Vy
+                let vx = self.read_register(x);
+                let vy = self.read_register(y);
+
+                if vx != vy
+                {
+                    self.pc += 2;
+                }
+            }, 
+
+            0xA => { self.i = nnn}, 
+            0xB => { self.pc = nnn + self.read_register(0) as u16; return}, 
+            0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
+
+            0xD => println!("display: reading {} bytes from memory \nfrom address {} \nat coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)), 
 
             0xE =>
             {
                 match kk
                 {
-                    0xA1 => println!("0x0xA1"), 
-                    0x9E => println!("0x0x9E"), 
+                    0xA1 => println!("checking keyboard"), 
+                    0x9E => println!("checking keyboard 2"), 
                     _ => println!("unknown instruction in 0xE")
                 }
             },
