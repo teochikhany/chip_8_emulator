@@ -4,9 +4,10 @@ pub const PROGRAM_START: u16 = 0x200;
 
 pub struct Cpu
 {
-    stack: Vec<u8>,
+    stack: [u16; 17],    // TODO: make this a array of 16 element not 17
     vx: [u8; 16],
     pub pc: u16,
+    sp: usize,
     i: u16,
 }
 
@@ -16,21 +17,22 @@ impl Cpu
     {
         Cpu 
         {
-            stack: Vec::new(),
+            stack: [0; 17],
             vx: [0; 16],
             pc: PROGRAM_START,
+            sp: 0,
             i: 0,
         }
     }
 
-    pub fn write_register(&mut self, register_index: usize, value:u8)
+    pub fn write_register(&mut self, register_index: u8, value:u8)
     {
-        self.vx[register_index] = value;
+        self.vx[register_index as usize] = value;
     }
 
-    pub fn read_register(&mut self, register_index: usize) -> u8
+    pub fn read_register(&self, register_index: u8) -> u8
     {
-        return self.vx[register_index];
+        return self.vx[register_index as usize];
     }
 
     pub fn debug(&self)
@@ -64,27 +66,77 @@ impl Cpu
                 match kk
                 {
                     0xE0 => println!("E0, clear display"),
-                    0xEE => println!("EE, return subroutine"),
+                    0xEE => 
+                    {
+                        // return from subroutine
+                        self.pc = self.stack[self.sp]; 
+                        self.sp -= 1;
+                        return;
+                    },
                     _ => println!("unknown instruction in 0x0")
                 }
             },
 
-            0x1 => println!("0x1, jump"),
-            0x2 => println!("0x2, call subroutine"),
-            0x3 => println!("0x3, skip instruction if =="),
-            0x4 => println!("0x4, skip instruction if !="),
-            0x5 => println!("0x5, skip instruction 2"),
-            0x6 => println!("0x6, set register"),
-            0x7 => println!("0x7, add"),
+            0x1 => {self.pc = nnn; return}, // JP addr 
+            0x2 => 
+            {
+                //  CALL addr
+                self.sp += 1; 
+                self.stack[self.sp] = self.pc + 2;
+                self.pc = nnn;
+                return;
+            },
+
+            0x3 => 
+            {
+                // SE Vx, byte
+                if self.read_register(x) == kk
+                {
+                    self.pc += 2;
+                }
+            },
+
+            0x4 => 
+            {
+                // SNE Vx, byte
+                if self.read_register(x) != kk
+                {
+                    self.pc += 2;
+                }
+            },
+
+            0x5 => 
+            {
+                // SE Vx, Vy
+                if self.read_register(x) == self.read_register(y)
+                {
+                    self.pc += 2;
+                }
+            },
+            0x6 => 
+            {
+                // LD Vx, byte
+                self.write_register(x, kk);
+            },
+
+            0x7 => 
+            {
+                // ADD Vx, byte
+                let c_vx = self.read_register(x);
+                self.write_register(x, c_vx + kk);  // TODO: wrapping_add what is it and should i use it?
+            },
 
             0x8 =>
             {
+                let vx = self.read_register(x);
+                let vy = self.read_register(y);
+
                 match n
                 {
-                    0x0 => println!("0x8xy0"), 
-                    0x1 => println!("0x8xy1"), 
-                    0x2 => println!("0x8xy2"), 
-                    0x3 => println!("0x8xy3"), 
+                    0x0 => { self.write_register(x, vy) }, 
+                    0x1 => { self.write_register(x, vx | vy) }, 
+                    0x2 => { self.write_register(x, vx & vy) }, 
+                    0x3 => { self.write_register(x, vx ^ vy) }, 
                     0x4 => println!("0x8xy4"), 
                     0x5 => println!("0x8xy5"), 
                     0x6 => println!("0x8xy6"), 
@@ -97,7 +149,8 @@ impl Cpu
             0x9 => println!("0x9"), 
             0xA => println!("0xA"), 
             0xB => println!("0xB"), 
-            0xD => println!("0xC"), 
+            0xC => println!("0xC"), 
+            0xD => println!("0xD"), 
 
             0xE =>
             {
@@ -129,5 +182,7 @@ impl Cpu
 
             _ => println!("not implementaed yet")
         }
+
+        self.pc += 2; // FIXME: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }
 }

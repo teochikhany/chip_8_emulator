@@ -30,9 +30,9 @@ fn main()
     while cpu.pc < 0x200 + data.len() as u16
     {
         cpu.run_instruction(&mut ram);
-        cpu.pc = cpu.pc + 2;
         t += 2;
     }   
+
     println!("t is: {}", t);
     println!("data is: {}", data.len());
     println!("pc is: {}", cpu.pc);
