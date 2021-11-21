@@ -138,11 +138,39 @@ impl Cpu
                     0x1 => { self.write_register(x, vx | vy) }, 
                     0x2 => { self.write_register(x, vx & vy) }, 
                     0x3 => { self.write_register(x, vx ^ vy) }, 
-                    0x4 => println!("0x8xy4"), 
-                    0x5 => println!("0x8xy5"), 
-                    0x6 => println!("0x8xy6"), 
-                    0x7 => println!("0x8xy7"), 
-                    0xE => println!("0x8xyE"), 
+                    0x4 => { 
+                            // ADD Vx, Vy
+                            let total: u16 = vx as u16 + vy as u16;
+                            self.write_register(x, total as u8);
+                            self.write_register(0xF, if total > 255  {1} else {0} );
+                        }, 
+
+                    0x5 => { 
+                            // SUB Vx, Vy 
+                            // TODO: check if I should use signed int instead of unsigned int
+                            let total = vx - vy;
+                            self.write_register(x, total);
+                            self.write_register(0xF, if vx > vy {1} else {0} );
+                        }, 
+
+                    0x6 => {
+                            self.write_register(0xF, vx & 0x1);
+                            self.write_register(x, vx >> 1);
+                        }, 
+                    
+                    0x7 => { 
+                            // SUB Vy, Vx 
+                            // TODO: check if I should use signed int instead of unsigned int
+                            let total = vy - vx;
+                            self.write_register(x, total);
+                            self.write_register(0xF, if vy > vx {1} else {0} );
+                        }, 
+
+                    0xE => {
+                            self.write_register(0xF, (vx & 0x80) >> 7);
+                            self.write_register(x, vx << 1);
+                        },  
+
                     _ => println!("unknown instruction in 0x8")
                 }
             },
