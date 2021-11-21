@@ -45,7 +45,7 @@ impl Ram
     {
         let mut result: Vec<u8> = Vec::new();
 
-        for i in start .. size
+        for i in start .. start + size
         {
             let i = i as usize;
             result.push(self.memory[i]);
@@ -72,6 +72,16 @@ impl Ram
             let i = i as usize;
             self.memory[i] = data[j];
             j += 1;
+        }
+    }
+
+    pub fn write_vec(& mut self, start: usize, data: &[u8])
+    {
+        let mut i = start;
+        for byte in data
+        {
+            self.memory[i] = *byte;
+            i += 1;
         }
     }
 }

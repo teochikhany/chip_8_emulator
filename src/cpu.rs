@@ -6,7 +6,7 @@ pub struct Cpu
 {
     stack: Vec<u8>,
     vx: [u8; 16],
-    pc: u16,
+    pub pc: u16,
     i: u16,
 }
 
