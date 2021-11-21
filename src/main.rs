@@ -17,7 +17,13 @@ fn main()
     
     println!("{:?}", test.read(0, 10));
 
-    let test_cpu = Cpu::new();
+    let mut test_cpu = Cpu::new();
     test_cpu.debug();
+
+    test_cpu.write_register(5, 7);
+
+    test_cpu.debug();
+
+    println!("value at register {}: {:}", 5, test_cpu.read_register(5));
 }
 

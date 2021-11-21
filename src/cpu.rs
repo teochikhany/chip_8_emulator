@@ -1,3 +1,7 @@
+#[path = "ram.rs"] mod ram;
+
+use ram::Ram;
+
 pub const PROGRAM_START: u16 = 0x200;
 
 pub struct Cpu
@@ -21,6 +25,16 @@ impl Cpu
         }
     }
 
+    pub fn write_register(&mut self, register_index: usize, value:u8)
+    {
+        self.vx[register_index] = value;
+    }
+
+    pub fn read_register(&mut self, register_index: usize) -> u8
+    {
+        return self.vx[register_index];
+    }
+
     pub fn debug(&self)
     {
         println!("\nCpu Stats");
@@ -28,5 +42,10 @@ impl Cpu
         println!("registers: {:?}", self.vx);
         println!("pc counter: {:}", self.pc);
         println!("i register: {:}", self.i);
+    }
+
+    pub fn run_instruction(&mut self)
+    {
+        
     }
 }
