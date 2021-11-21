@@ -37,15 +37,14 @@ impl Cpu
         return self.vx[register_index as usize];
     }
 
-    #[allow(dead_code)] // TODO: remove this later if not used
-    pub fn debug(&self)
-    {
-        println!("\nCpu Stats");
-        println!("stack size: {:}", self.stack.len());
-        println!("registers: {:?}", self.vx);
-        println!("pc counter: {:}", self.pc);
-        println!("i register: {:}", self.i);
-    }
+    // pub fn debug(&self)
+    // {
+    //     println!("\nCpu Stats");
+    //     println!("stack size: {:}", self.stack.len());
+    //     println!("registers: {:?}", self.vx);
+    //     println!("pc counter: {:}", self.pc);
+    //     println!("i register: {:}", self.i);
+    // }
 
     pub fn run_instruction(&mut self, ram: &mut Ram)
     {
@@ -218,6 +217,7 @@ impl Cpu
                     0x33 => println!("0x33"), 
                     0x55 => println!("0x55"), 
                     0x65 => println!("0x65"), 
+
                     _ => println!("unknown instruction in 0xF")
                 }
             }

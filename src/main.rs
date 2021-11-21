@@ -31,6 +31,7 @@ fn main()
     {
         cpu.run_instruction(&mut ram);
         t += 2;
+        println!("t is: {}", t);
     }   
 
     println!("t is: {}", t);
