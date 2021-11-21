@@ -41,7 +41,7 @@ impl Ram
         return Ram{memory : mem};
     }
 
-    pub fn read(&self, start: u8, size: u8) -> Vec<u8>
+    pub fn read(&self, start: u16, size: u16) -> Vec<u8>
     {
         let mut result: Vec<u8> = Vec::new();
 
@@ -52,6 +52,11 @@ impl Ram
         }
 
         return result;
+    }
+
+    pub fn read_byte(&self, start: u16) -> u8
+    {
+        return self.memory[start as usize];
     }
 
     pub fn write(& mut self, start: u8, size: u8, data: &Vec<u8>)
