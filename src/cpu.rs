@@ -254,6 +254,7 @@ impl Cpu
             _ => println!("not implementaed yet")
         }
 
+        // FIXME: should should only happen 1 every 60hz
         self.dt = self.dt.saturating_sub(1);
 
         // println!("dt: {}", self.dt);

@@ -26,20 +26,10 @@ fn main()
 
     println!("{:?}", ram.read(0x200, 10));
 
-    let mut t = 0;
     while cpu.pc < 0x200 + data.len() as u16
     {
         cpu.run_instruction(&mut ram);
-        t += 2;
-        // println!("t is: {}, with instruction: {:X},{:X}", t, ram.read_byte(cpu.pc), ram.read_byte(cpu.pc + 1));
-
-        // if t > 500 {break}
     }   
 
-    // println!("t is: {}", t);
-    // println!("data is: {}", data.len());
-    // println!("pc is: {}", cpu.pc);
-
-    // println!("{:?}", ram.read(0x200 + data.len() as u16 - 50, 100));
 }
 
