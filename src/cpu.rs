@@ -254,7 +254,7 @@ impl Cpu
             _ => println!("not implementaed yet")
         }
 
-        // FIXME: should should only happen 1 every 60hz
+        // FIXME: should should only happen 1 every 60hz, on a 60hz display does this mean 1 time per second ?
         self.dt = self.dt.saturating_sub(1);
 
         // println!("dt: {}", self.dt);
