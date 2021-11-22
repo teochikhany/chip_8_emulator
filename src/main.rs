@@ -13,7 +13,6 @@ use display::Display;
 
 fn main()
 {
-
     let args: Vec<String> = env::args().collect();
     let file_name = args.get(1).unwrap();
 
@@ -21,20 +20,15 @@ fn main()
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data).expect("File not found!");
 
-
     let mut ram = Ram::new();
     let mut cpu = Cpu::new();
-    let display = Display::new();
-
-    let window = display.create_window();
+    let mut display = Display::new();
 
     ram.write(0x200, &data);
 
-    println!("{:?}", ram.read(0x200, 10));
-
     while cpu.pc < 0x200 + data.len() as u16
     {
-        cpu.run_instruction(&mut ram);
+        cpu.run_instruction(&mut ram, &mut display);
     }   
 
 }

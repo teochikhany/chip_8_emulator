@@ -1,6 +1,7 @@
 extern crate rand;
 
 use crate::ram::Ram;
+use crate::display::Display;
 
 pub const PROGRAM_START: u16 = 0x200;
 
@@ -50,7 +51,7 @@ impl Cpu
     //     println!("i register: {:}", self.i);
     // }
 
-    pub fn run_instruction(&mut self, ram: &mut Ram)
+    pub fn run_instruction(&mut self, ram: &mut Ram, display: &mut Display)
     {
         let hi = ram.read_byte(self.pc) as u16;
         let lo = ram.read_byte(self.pc + 1) as u16;
@@ -71,7 +72,7 @@ impl Cpu
             {
                 match kk
                 {
-                    0xE0 => println!("E0, clear display"), // FIXME: not implemented
+                    0xE0 => { display.clear_display() },
                     0xEE => 
                     {
                         // return from subroutine

@@ -1,9 +1,10 @@
 extern crate minifb;
 
-use minifb::{Key, Window, WindowOptions};
+use minifb::{Window, WindowOptions};
 
 pub struct Display
 {
+    window: minifb::Window,
     width: usize,
     height: usize,
     buffer: Vec<u32>,
@@ -15,25 +16,36 @@ impl Display
     {
         let w = 640;
         let h = 320;
-        return Display { width: w, height: h, buffer: vec![0; w * h] };
-    }
 
-    pub fn create_window(&self) -> minifb::Window
-    {
-        let mut window = Window::new(
+        let mut win = Window::new(
             "Rust Chip8 emulator",
-            self.width,
-            self.height,
+            w,
+            h,
             WindowOptions::default(),
         ).expect("could not create windows");
 
-        window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+        win.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
-        return window;
+        return Display { window: win, width: w, height: h, buffer: vec![0; w * h], };
     }
 
-    pub fn draw_pixel(&self, window: &mut minifb::Window)
+    pub fn clear_display(&mut self)
     {
-        window.update_with_buffer(&self.buffer, self.width, self.height).expect("cannot draw pixel");
+        for i in 0 .. self.width * self.height
+        {
+            self.write_buffer(i, 0);
+        }
+        self.update_pixel();
+    }
+
+
+    pub fn update_pixel(&mut self)
+    {
+        self.window.update_with_buffer(&self.buffer, self.width, self.height).expect("cannot draw pixel");
+    }
+
+    pub fn write_buffer(&mut self, index: usize, data: u32)
+    {
+        self.buffer[index] = data;
     }
 }
