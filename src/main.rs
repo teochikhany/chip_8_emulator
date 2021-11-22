@@ -1,12 +1,14 @@
 mod ram;
 mod cpu;
-
-use ram::Ram;
-use cpu::Cpu;
+mod display;
 
 use std::env;
 use std::fs::File;
 use std::io::Read;
+
+use ram::Ram;
+use cpu::Cpu;
+use display::Display;
 
 
 fn main()
@@ -19,8 +21,12 @@ fn main()
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data).expect("File not found!");
 
+
     let mut ram = Ram::new();
     let mut cpu = Cpu::new();
+    let display = Display::new();
+
+    let window = display.create_window();
 
     ram.write(0x200, &data);
 
