@@ -11,6 +11,8 @@ pub struct Cpu
     pub pc: u16,
     sp: usize,
     i: u16,
+    st: u8,
+    dt: u8,
 }
 
 impl Cpu
@@ -24,6 +26,8 @@ impl Cpu
             pc: PROGRAM_START,
             sp: 0,
             i: 0,
+            st: 0,
+            dt: 0,
         }
     }
 
@@ -67,7 +71,7 @@ impl Cpu
             {
                 match kk
                 {
-                    0xE0 => println!("E0, clear display"),
+                    0xE0 => println!("E0, clear display"), // FIXME: not implemented
                     0xEE => 
                     {
                         // return from subroutine
@@ -95,6 +99,7 @@ impl Cpu
                 if self.read_register(x) == kk
                 {
                     self.pc += 2;
+                    println!("equals, skipping");
                 }
             },
 
@@ -125,7 +130,7 @@ impl Cpu
             {
                 // ADD Vx, byte
                 let c_vx = self.read_register(x);
-                self.write_register(x, c_vx + kk);  // TODO: wrapping_add what is it and should i use it?
+                self.write_register(x, c_vx.wrapping_add(kk));
             },
 
             0x8 =>
@@ -148,8 +153,7 @@ impl Cpu
 
                     0x5 => { 
                             // SUB Vx, Vy 
-                            // TODO: check if I should use signed int instead of unsigned int
-                            let total = vx - vy;
+                            let total = vx.wrapping_sub(vy);
                             self.write_register(x, total);
                             self.write_register(0xF, if vx > vy {1} else {0} );
                         }, 
@@ -161,8 +165,7 @@ impl Cpu
                     
                     0x7 => { 
                             // SUB Vy, Vx 
-                            // TODO: check if I should use signed int instead of unsigned int
-                            let total = vy - vx;
+                            let total = vy.wrapping_sub(vx);
                             self.write_register(x, total);
                             self.write_register(0xF, if vy > vx {1} else {0} );
                         }, 
@@ -192,14 +195,15 @@ impl Cpu
             0xB => { self.pc = nnn + self.read_register(0) as u16; return}, 
             0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
 
-            0xD => println!("display: reading {} bytes from memory \nfrom address {} \nat coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)), 
+            // FIXME: not implemented
+            0xD => println!("display: reading {} bytes from memory from address {} at coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)), 
 
             0xE =>
             {
                 match kk
                 {
-                    0xA1 => println!("checking keyboard"), 
-                    0x9E => println!("checking keyboard 2"), 
+                    0xA1 => println!("checking keyboard"),          // FIXME: not implemented
+                    0x9E => println!("checking keyboard 2"),        // FIXME: not implemented
                     _ => println!("unknown instruction in 0xE")
                 }
             },
@@ -208,15 +212,39 @@ impl Cpu
             {
                 match kk
                 {
-                    0x07 => println!("0x07"), 
-                    0x1A => println!("0x1A"), 
-                    0x15 => println!("0x15"), 
-                    0x18 => println!("0x18"), 
-                    0x1E => println!("0x1E"), 
-                    0x29 => println!("0x29"), 
-                    0x33 => println!("0x33"), 
-                    0x55 => println!("0x55"), 
-                    0x65 => println!("0x65"), 
+                    0x07 => { self.write_register(x, self.dt) }, 
+                    0x1A => println!("0x1A, waiting key press"),    // FIXME: not implemented
+                    0x15 => { self.dt = self.read_register(x) }, 
+                    0x18 => { self.st = self.read_register(x) }, 
+                    0x1E => { self.i += self.read_register(x) as u16 }, 
+                    0x29 => { self.i = self.read_register(x) as u16 * 5},
+
+                    0x33 => {
+                            // TODO: recheck this calculation
+                            let vx = self.read_register(x);
+                            ram.write_byte(self.i, vx / 100);
+                            ram.write_byte(self.i + 1, (vx % 100) / 10);
+                            ram.write_byte(self.i + 2, vx % 10);
+                        }, 
+                        
+                    0x55 => {
+                        for j in 0 ..= x
+                        {
+                            ram.write_byte(self.i + j as u16, self.read_register(j));
+                        }
+
+                        self.i += x as u16 + 1; // TODO: check if this is necessary
+                    }, 
+
+                    0x65 => {
+                        for j in 0 ..= x
+                        {
+                            let value = ram.read_byte(self.i + j as u16);
+                            self.write_register(j, value);
+                        }
+                        
+                        self.i += x as u16 + 1; // TODO: check if this is necessary
+                    },  
 
                     _ => println!("unknown instruction in 0xF")
                 }
@@ -226,6 +254,9 @@ impl Cpu
             _ => println!("not implementaed yet")
         }
 
+        self.dt = self.dt.saturating_sub(1);
+
+        // println!("dt: {}", self.dt);
         self.pc += 2; // FIXME: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }
 }

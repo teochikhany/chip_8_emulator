@@ -1,3 +1,12 @@
+debug
+    60,60   V0 = 0x60
+    F0,15   dt = V0
+
+    F0,7	V0 = dt                 // loop start here
+    30,0	skip next if V0 == 0
+    12,1A	jump to location 21A
+
+
 ram
     read and write to the ram
     the ram should is 4096 size

@@ -22,7 +22,7 @@ fn main()
     let mut ram = Ram::new();
     let mut cpu = Cpu::new();
 
-    ram.write_vec(0x200, &data);
+    ram.write(0x200, &data);
 
     println!("{:?}", ram.read(0x200, 10));
 
@@ -31,13 +31,15 @@ fn main()
     {
         cpu.run_instruction(&mut ram);
         t += 2;
-        println!("t is: {}", t);
+        // println!("t is: {}, with instruction: {:X},{:X}", t, ram.read_byte(cpu.pc), ram.read_byte(cpu.pc + 1));
+
+        // if t > 500 {break}
     }   
 
-    println!("t is: {}", t);
-    println!("data is: {}", data.len());
-    println!("pc is: {}", cpu.pc);
+    // println!("t is: {}", t);
+    // println!("data is: {}", data.len());
+    // println!("pc is: {}", cpu.pc);
 
-    println!("{:?}", ram.read(0x200 + data.len() as u16 - 50, 100));
+    // println!("{:?}", ram.read(0x200 + data.len() as u16 - 50, 100));
 }
 

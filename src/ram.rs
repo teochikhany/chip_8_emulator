@@ -75,13 +75,18 @@ impl Ram
     //     }
     // }
 
-    pub fn write_vec(& mut self, start: usize, data: &[u8])
+    pub fn write(& mut self, start: u16, data: &[u8])
     {
         let mut i = start;
         for byte in data
         {
-            self.memory[i] = *byte;
+            self.memory[i as usize] = *byte;
             i += 1;
         }
+    }
+
+    pub fn write_byte(& mut self, start: u16, data: u8)
+    {
+        self.memory[start as usize] = data;
     }
 }
