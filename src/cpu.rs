@@ -42,15 +42,6 @@ impl Cpu
         return self.vx[register_index as usize];
     }
 
-    // pub fn debug(&self)
-    // {
-    //     println!("\nCpu Stats");
-    //     println!("stack size: {:}", self.stack.len());
-    //     println!("registers: {:?}", self.vx);
-    //     println!("pc counter: {:}", self.pc);
-    //     println!("i register: {:}", self.i);
-    // }
-
     pub fn run_instruction(&mut self, ram: &mut Ram, display: &mut Display)
     {
         let hi = ram.read_byte(self.pc) as u16;
@@ -255,10 +246,9 @@ impl Cpu
             _ => println!("not implementaed yet")
         }
 
-        // FIXME: should should only happen 1 every 60hz, on a 60hz display does this mean 1 time per second ?
+        // FIXME: this should only happen 1 every 60hz, on a 60hz display does this mean 1 time per second ?
         self.dt = self.dt.saturating_sub(1);
 
-        // println!("dt: {}", self.dt);
-        self.pc += 2; // FIXME: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
+        self.pc += 2; // TODO: recheck this: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }
 }

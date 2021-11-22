@@ -20,8 +20,8 @@ fn main()
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data).expect("File not found!");
 
-    let mut ram = Ram::new();
-    let mut cpu = Cpu::new();
+    let mut ram     = Ram::new();
+    let mut cpu     = Cpu::new();
     let mut display = Display::new();
 
     ram.write(0x200, &data);
@@ -30,6 +30,5 @@ fn main()
     {
         cpu.run_instruction(&mut ram, &mut display);
     }   
-
 }
 
