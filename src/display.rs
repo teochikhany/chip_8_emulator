@@ -26,7 +26,10 @@ impl Display
 
         win.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
-        return Display { window: win, width: w, height: h, buffer: vec![0; w * h], };
+        let mut dis = Display { window: win, width: w, height: h, buffer: vec![0x000000; w * h], };
+        dis.update_pixel();
+
+        return dis;
     }
 
     pub fn clear_display(&mut self)

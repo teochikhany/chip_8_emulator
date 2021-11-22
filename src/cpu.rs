@@ -32,14 +32,19 @@ impl Cpu
         }
     }
 
-    pub fn write_register(&mut self, register_index: u8, value:u8)
+    fn write_register(&mut self, register_index: u8, value:u8)
     {
         self.vx[register_index as usize] = value;
     }
 
-    pub fn read_register(&self, register_index: u8) -> u8
+    fn read_register(&self, register_index: u8) -> u8
     {
         return self.vx[register_index as usize];
+    }
+
+    pub fn substract_dt(&mut self)
+    {
+        self.dt = self.dt.saturating_sub(1);
     }
 
     pub fn run_instruction(&mut self, ram: &mut Ram, display: &mut Display)
@@ -247,7 +252,7 @@ impl Cpu
         }
 
         // FIXME: this should only happen 1 every 60hz, on a 60hz display does this mean 1 time per second ?
-        self.dt = self.dt.saturating_sub(1);
+        
 
         self.pc += 2; // TODO: recheck this: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }

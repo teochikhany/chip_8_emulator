@@ -9,6 +9,7 @@ use std::io::Read;
 use ram::Ram;
 use cpu::Cpu;
 use display::Display;
+use std::time::{Duration, Instant};
 
 
 fn main()
@@ -26,9 +27,18 @@ fn main()
 
     ram.write(0x200, &data);
 
-    while cpu.pc < 0x200 + data.len() as u16
+    let mut time = Instant::now();
+
+    // while cpu.pc < 0x200 + data.len() as u16
+    loop
     {
         cpu.run_instruction(&mut ram, &mut display);
+
+        if Instant::now() - time > Duration::from_millis(1000)
+        {
+            time = Instant::now();
+            cpu.substract_dt();
+        }
     }   
 }
 
