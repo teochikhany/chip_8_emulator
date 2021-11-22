@@ -34,7 +34,7 @@ fn main()
     {
         cpu.run_instruction(&mut ram, &mut display);
 
-        if Instant::now() - time > Duration::from_millis(1000)
+        if Instant::now() - time > Duration::from_millis(10)
         {
             time = Instant::now();
             cpu.substract_dt();

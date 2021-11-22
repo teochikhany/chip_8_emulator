@@ -36,19 +36,18 @@ impl Display
     {
         for i in 0 .. self.width * self.height
         {
-            self.write_buffer(i, 0);
+            self.write_buffer(i as u16, 0);
         }
         self.update_pixel();
     }
-
 
     pub fn update_pixel(&mut self)
     {
         self.window.update_with_buffer(&self.buffer, self.width, self.height).expect("cannot draw pixel");
     }
 
-    pub fn write_buffer(&mut self, index: usize, data: u32)
+    pub fn write_buffer(&mut self, index: u16, data: u32)
     {
-        self.buffer[index] = data;
+        self.buffer[index as usize] = data;
     }
 }

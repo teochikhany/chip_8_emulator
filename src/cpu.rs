@@ -193,7 +193,21 @@ impl Cpu
             0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
 
             // FIXME: not implemented
-            0xD => println!("display: reading {} bytes from memory from address {} at coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)), 
+            // println!("display: reading {} bytes from memory from address {} at coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)),
+            0xD =>  
+            {
+                let result = ram.read(self.i, n as u16);
+
+                let vx = self.read_register(x) as u16;
+                let vy = self.read_register(y) as u16;
+
+                for i in 0 .. result.len()
+                {
+                    display.write_buffer(vx * i as u16 + vy, 0xaa0000);
+                }
+
+                display.update_pixel();
+            },
 
             0xE =>
             {
@@ -250,9 +264,6 @@ impl Cpu
 
             _ => println!("not implementaed yet")
         }
-
-        // FIXME: this should only happen 1 every 60hz, on a 60hz display does this mean 1 time per second ?
-        
 
         self.pc += 2; // TODO: recheck this: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }
