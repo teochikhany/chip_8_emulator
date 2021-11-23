@@ -17,14 +17,14 @@ impl Display
         let w = 64;
         let h = 32;
 
-        let mut win = Window::new(
+        let win = Window::new(
             "Rust Chip8 emulator",
             w,
             h,
             WindowOptions::default(),
         ).expect("could not create windows");
 
-        win.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+        // win.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
         let mut dis = Display { window: win, width: w, height: h, buffer: vec![0x000000; w * h], };
         dis.update_pixel();
@@ -33,7 +33,7 @@ impl Display
     }
 
     pub fn get_width(&self) -> u16 { return self.width as u16; }
-    pub fn get_height(&self) -> usize { return self.height; }
+    // pub fn get_height(&self) -> usize { return self.height; }
     pub fn is_open(&self) -> bool { return self.window.is_open(); }
 
     pub fn clear_display(&mut self)
@@ -53,5 +53,17 @@ impl Display
     pub fn write_buffer(&mut self, index: u16, color: u32)
     {
         self.buffer[index as usize] = color;
+    }
+
+    pub fn is_pixel(&self, index: u16) -> u8
+    {
+        let pixel = self.buffer[index as usize];
+
+        match pixel
+        {
+            0x000000 => 0,
+            0xffffff => 1,
+            _ => 2,
+        }
     }
 }

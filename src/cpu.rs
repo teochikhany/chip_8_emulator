@@ -32,6 +32,16 @@ impl Cpu
         }
     }
 
+    fn parse(c: char) -> u8
+    {
+        match c
+        {
+            '1' => 1,
+            '0' => 0,
+             _  => 2,
+        }
+    }
+
     fn write_register(&mut self, register_index: u8, value:u8)
     {
         self.vx[register_index as usize] = value;
@@ -96,7 +106,6 @@ impl Cpu
                 if self.read_register(x) == kk
                 {
                     self.pc += 2;
-                    println!("equals, skipping");
                 }
             },
 
@@ -192,7 +201,6 @@ impl Cpu
             0xB => { self.pc = nnn + self.read_register(0) as u16; return}, 
             0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
 
-            // FIXME: not implemented the XOR
             0xD =>  
             {
                 let sprite = ram.read(self.i, n as u16);
@@ -207,11 +215,31 @@ impl Cpu
                     let byte_str = format!("{:b}", byte);
                     for bite in byte_str.chars()
                     {
-                        if bite == '1'
+                        let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
+
+                        let current_pixel = display.is_pixel(index);
+                        let bite_int = Cpu::parse(bite);
+
+                        let result = current_pixel ^ bite_int;
+
+                        if result == 1
                         {
-                            let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
                             display.write_buffer(index, 0xffffff);
                         }
+                        else
+                        {
+                            display.write_buffer(index, 0x0);
+                        }
+                        
+                        if current_pixel == 1 && bite_int == 0
+                        {
+                            self.write_register(0xf, 1);
+                        }
+                        else
+                        {
+                            self.write_register(0xf, 0);
+                        }
+
                         column += 1;
                     }
 
@@ -225,8 +253,8 @@ impl Cpu
             {
                 match kk
                 {
-                    0xA1 => println!("checking keyboard"),          // FIXME: not implemented
-                    0x9E => println!("checking keyboard 2"),        // FIXME: not implemented
+                    0xA1 => {}, //println!("checking keyboard"),          // FIXME: not implemented
+                    0x9E => {}, // println!("checking keyboard 2"),        // FIXME: not implemented
                     _ => println!("unknown instruction in 0xE")
                 }
             },
