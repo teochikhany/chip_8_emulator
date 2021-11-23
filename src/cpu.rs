@@ -193,17 +193,31 @@ impl Cpu
             0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
 
             // FIXME: not implemented
-            // println!("display: reading {} bytes from memory from address {} at coord  {}, {}", n, self.i, self.read_register(x), self.read_register(y)),
             0xD =>  
             {
-                let result = ram.read(self.i, n as u16);
+                let sprite = ram.read(self.i, n as u16);
+                let cood_x = self.read_register(x) as u16;
+                let cood_y = self.read_register(y) as u16;
 
-                let vx = self.read_register(x) as u16;
-                let vy = self.read_register(y) as u16;
+                println!("sprite data: {:?}", sprite);
+                println!("coord: {:?}, {:?}", cood_x, cood_y);
 
-                for i in 0 .. result.len()
+
+                let mut row = 0;
+                for byte in sprite
                 {
-                    display.write_buffer(vx * i as u16 + vy, 0xaa0000);
+                    let mut column = 0;
+                    for bite in byte
+                    {
+                        if bite == 1
+                        {
+                            let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
+                            display.write_buffer(index, 0xffffff);
+                        }
+                        column += 1;
+                    }
+
+                    row += 1;
                 }
 
                 display.update_pixel();

@@ -7,15 +7,15 @@ pub struct Display
     window: minifb::Window,
     width: usize,
     height: usize,
-    buffer: Vec<u32>,
+    pub buffer: Vec<u32>,
 }
 
 impl Display
 {
     pub fn new() -> Display
     {
-        let w = 640;
-        let h = 320;
+        let w = 64;
+        let h = 32;
 
         let mut win = Window::new(
             "Rust Chip8 emulator",
@@ -32,6 +32,10 @@ impl Display
         return dis;
     }
 
+    pub fn get_width(&self) -> u16 { return self.width as u16; }
+    pub fn get_height(&self) -> usize { return self.height; }
+    pub fn is_open(&self) -> bool { return self.window.is_open(); }
+
     pub fn clear_display(&mut self)
     {
         for i in 0 .. self.width * self.height
@@ -46,8 +50,8 @@ impl Display
         self.window.update_with_buffer(&self.buffer, self.width, self.height).expect("cannot draw pixel");
     }
 
-    pub fn write_buffer(&mut self, index: u16, data: u32)
+    pub fn write_buffer(&mut self, index: u16, color: u32)
     {
-        self.buffer[index as usize] = data;
+        self.buffer[index as usize] = color;
     }
 }

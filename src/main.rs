@@ -5,12 +5,15 @@ mod display;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::thread;
 
 use ram::Ram;
 use cpu::Cpu;
 use display::Display;
 use std::time::{Duration, Instant};
 
+
+const duration: std::time::Duration = Duration::from_millis(100);
 
 fn main()
 {
@@ -29,15 +32,19 @@ fn main()
 
     let mut time = Instant::now();
 
-    // while cpu.pc < 0x200 + data.len() as u16
-    loop
-    {
-        cpu.run_instruction(&mut ram, &mut display);
 
-        if Instant::now() - time > Duration::from_millis(10)
+    while display.is_open()
+    {
+        if Instant::now() - time > duration
         {
-            time = Instant::now();
+            cpu.run_instruction(&mut ram, &mut display);
             cpu.substract_dt();
+
+            time = Instant::now();
+        }
+        else
+        {
+            thread::sleep(duration);
         }
     }   
 }
