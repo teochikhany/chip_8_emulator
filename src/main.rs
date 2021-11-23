@@ -13,7 +13,7 @@ use display::Display;
 use std::time::{Duration, Instant};
 
 
-const duration: std::time::Duration = Duration::from_millis(100);
+const duration: std::time::Duration = Duration::from_millis(10);
 
 fn main()
 {

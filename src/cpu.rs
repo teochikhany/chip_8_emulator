@@ -199,17 +199,15 @@ impl Cpu
                 let cood_x = self.read_register(x) as u16;
                 let cood_y = self.read_register(y) as u16;
 
-                println!("sprite data: {:?}", sprite);
-                println!("coord: {:?}, {:?}", cood_x, cood_y);
-
-
                 let mut row = 0;
                 for byte in sprite
                 {
                     let mut column = 0;
-                    for bite in byte
+
+                    let byte_str = format!("{:b}", byte);
+                    for bite in byte_str.chars()
                     {
-                        if bite == 1
+                        if bite == '1'
                         {
                             let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
                             display.write_buffer(index, 0xffffff);
