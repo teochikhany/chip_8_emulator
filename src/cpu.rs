@@ -192,7 +192,7 @@ impl Cpu
             0xB => { self.pc = nnn + self.read_register(0) as u16; return}, 
             0xC => { let random :u8 = rand::random(); self.write_register(x, random & kk) }, 
 
-            // FIXME: not implemented
+            // FIXME: not implemented the XOR
             0xD =>  
             {
                 let sprite = ram.read(self.i, n as u16);

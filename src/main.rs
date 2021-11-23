@@ -13,7 +13,7 @@ use display::Display;
 use std::time::{Duration, Instant};
 
 
-const duration: std::time::Duration = Duration::from_millis(10);
+const DURATION: std::time::Duration = Duration::from_millis(10);
 
 fn main()
 {
@@ -35,7 +35,7 @@ fn main()
 
     while display.is_open()
     {
-        if Instant::now() - time > duration
+        if Instant::now() - time > DURATION
         {
             cpu.run_instruction(&mut ram, &mut display);
             cpu.substract_dt();
@@ -44,7 +44,7 @@ fn main()
         }
         else
         {
-            thread::sleep(duration);
+            thread::sleep(DURATION);
         }
     }   
 }
