@@ -6,8 +6,8 @@ const ORIGINAL_WIDTH: usize = 64;
 const ORIGINAL_HEIGHT: usize = 32;
 
 pub const SCALE: usize = 5;
-pub const WIDTH: usize = ORIGINAL_WIDTH * SCALE;
-pub const HEIGHT: usize = ORIGINAL_HEIGHT * SCALE;
+const WIDTH: usize = ORIGINAL_WIDTH * SCALE;
+const HEIGHT: usize = ORIGINAL_HEIGHT * SCALE;
 
 pub struct Display
 {
