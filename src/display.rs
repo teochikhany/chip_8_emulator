@@ -5,7 +5,7 @@ use minifb::{Window, WindowOptions};
 const ORIGINAL_WIDTH: usize = 64;
 const ORIGINAL_HEIGHT: usize = 32;
 
-pub const SCALE: usize = 5;
+pub const SCALE: usize = 10;
 const WIDTH: usize = ORIGINAL_WIDTH * SCALE;
 const HEIGHT: usize = ORIGINAL_HEIGHT * SCALE;
 
@@ -36,7 +36,7 @@ impl Display
         return dis;
     }
 
-    pub fn get_width(&self) -> u16 { return self.width as u16; }
+    pub fn get_width(&self) -> u32 { return self.width as u32; }
     // pub fn get_height(&self) -> usize { return self.height; }
     pub fn is_open(&self) -> bool { return self.window.is_open(); }
 
@@ -44,7 +44,7 @@ impl Display
     {
         for i in 0 .. self.width * self.height
         {
-            self.write_buffer(i as u16, 0);
+            self.write_buffer(i as u32, 0);
         }
         self.update_pixel();
     }
@@ -54,12 +54,12 @@ impl Display
         self.window.update_with_buffer(&self.buffer, self.width, self.height).expect("cannot draw pixel");
     }
 
-    pub fn write_buffer(&mut self, index: u16, color: u32)
+    pub fn write_buffer(&mut self, index: u32, color: u32)
     {
         self.buffer[index as usize] = color;
     }
 
-    pub fn is_pixel(&self, index: u16) -> u8
+    pub fn is_pixel(&self, index: u32) -> u8
     {
         let pixel = self.buffer[index as usize];
 

@@ -307,7 +307,7 @@ fn apply_scalling(display: &mut Display, ori_x: u16, ori_y: u16, row: u16, colum
             let cood_x = base_cood_x + scale_factor;
             let cood_y = base_cood_y + scale_factor2;
 
-            let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
+            let index :u32 = ( (row + cood_y) as u32 * display.get_width() ) + (cood_x + column) as u32;
             let current_pixel = display.is_pixel(index);
             let result = current_pixel ^ bite_int;
 
