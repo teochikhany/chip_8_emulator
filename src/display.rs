@@ -5,7 +5,7 @@ use minifb::{Window, WindowOptions};
 const ORIGINAL_WIDTH: usize = 64;
 const ORIGINAL_HEIGHT: usize = 32;
 
-pub const SCALE: usize = 10;
+pub const SCALE: usize = 5;
 pub const WIDTH: usize = ORIGINAL_WIDTH * SCALE;
 pub const HEIGHT: usize = ORIGINAL_HEIGHT * SCALE;
 
@@ -14,7 +14,7 @@ pub struct Display
     window: minifb::Window,
     width: usize,
     height: usize,
-    pub buffer: Vec<u32>,
+    buffer: Vec<u32>,
 }
 
 impl Display

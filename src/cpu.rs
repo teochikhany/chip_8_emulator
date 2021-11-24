@@ -32,15 +32,6 @@ impl Cpu
         }
     }
 
-    fn parse(c: char) -> u8
-    {
-        match c
-        {
-            '1' => 1,
-            '0' => 0,
-             _  => 2,
-        }
-    }
 
     fn write_register(&mut self, register_index: u8, value:u8)
     {
@@ -211,28 +202,13 @@ impl Cpu
                 for byte in sprite
                 {
                     let mut column = 0;
-
                     let byte_str = format!("{:b}", byte);
+
                     for bite in byte_str.chars()
                     {
-                        let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
-
-                        let current_pixel = display.is_pixel(index);
-                        let bite_int = Cpu::parse(bite);
-
-                        let result = current_pixel ^ bite_int;
-
-                        if result == 1
-                        {
-                            display.write_buffer(index, 0xffffff);
-                        }
-                        else
-                        {
-                            display.write_buffer(index, 0x0);
-                        }
-                        
-                        self.write_register(0xf, (current_pixel == 1 && bite_int == 0) as u8);
-
+                        let result = apply_scalling(display, cood_x, cood_y, row, column, bite);
+                        self.write_register(0xf, result as u8);
+        
                         column += 1;
                     }
 
@@ -300,4 +276,60 @@ impl Cpu
 
         self.pc += 2; // TODO: recheck this: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
     }
+}
+
+fn parse(c: char) -> u8
+{
+    match c
+    {
+        '1' => 1,
+        '0' => 0,
+            _  => 2,
+    }
+}
+
+fn apply_scalling(display: &mut Display, ori_x: u16, ori_y: u16, row: u16, column: u16, bite: char) -> bool
+{
+    let scale = crate::display::SCALE as u16;
+
+    let base_cood_x = ori_x * scale;
+    let base_cood_y = ori_y * scale;
+    let row = row * scale;
+    let column = column * scale;
+
+    let mut result: bool = false;
+
+    for scale_factor in 0 .. scale
+    {
+        for scale_factor2 in 0 .. scale
+        {
+            let cood_x = base_cood_x + scale_factor;
+            let cood_y = base_cood_y + scale_factor2;
+
+            let index = ( (row + cood_y) * display.get_width() ) + (cood_x + column);
+            result = draw_pixel(display, index, bite);
+        }
+    }
+
+    return result;
+}
+
+
+fn draw_pixel(display: &mut Display, index: u16, bite: char) -> bool
+{
+    let current_pixel = display.is_pixel(index);
+    let bite_int = parse(bite);
+
+    let result = current_pixel ^ bite_int;
+
+    if result == 1
+    {
+        display.write_buffer(index, 0xffffff);
+    }
+    else
+    {
+        display.write_buffer(index, 0x0);
+    }
+
+    return current_pixel == 1 && bite_int == 0;
 }
