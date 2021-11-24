@@ -2,6 +2,13 @@ extern crate minifb;
 
 use minifb::{Window, WindowOptions};
 
+const ORIGINAL_WIDTH: usize = 64;
+const ORIGINAL_HEIGHT: usize = 32;
+
+pub const SCALE: usize = 10;
+pub const WIDTH: usize = ORIGINAL_WIDTH * SCALE;
+pub const HEIGHT: usize = ORIGINAL_HEIGHT * SCALE;
+
 pub struct Display
 {
     window: minifb::Window,
@@ -14,19 +21,16 @@ impl Display
 {
     pub fn new() -> Display
     {
-        let w = 64;
-        let h = 32;
-
         let win = Window::new(
             "Rust Chip8 emulator",
-            w,
-            h,
+            WIDTH,
+            HEIGHT,
             WindowOptions::default(),
         ).expect("could not create windows");
 
         // win.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
-        let mut dis = Display { window: win, width: w, height: h, buffer: vec![0x000000; w * h], };
+        let mut dis = Display { window: win, width: WIDTH, height: HEIGHT, buffer: vec![0x000000; WIDTH * HEIGHT], };
         dis.update_pixel();
 
         return dis;

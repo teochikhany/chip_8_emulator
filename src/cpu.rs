@@ -231,14 +231,7 @@ impl Cpu
                             display.write_buffer(index, 0x0);
                         }
                         
-                        if current_pixel == 1 && bite_int == 0
-                        {
-                            self.write_register(0xf, 1);
-                        }
-                        else
-                        {
-                            self.write_register(0xf, 0);
-                        }
+                        self.write_register(0xf, (current_pixel == 1 && bite_int == 0) as u8);
 
                         column += 1;
                     }
