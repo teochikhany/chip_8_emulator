@@ -9,7 +9,7 @@ pub struct Cpu
 {
     stack: [u16; 16],
     vx: [u8; 16],
-    pub pc: u16,
+    pc: u16,
     sp: usize,
     i: u16,
     st: u8,
