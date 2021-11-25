@@ -202,7 +202,7 @@ impl Cpu
                 for byte in sprite
                 {
                     let mut column = 0;
-                    let byte_str = format!("{:b}", byte);
+                    let byte_str = format!("{:0>8b}", byte);
 
                     for bite in byte_str.chars()
                     {
