@@ -7,7 +7,7 @@ pub const PROGRAM_START: u16 = 0x200;
 
 pub struct Cpu
 {
-    stack: [u16; 17],    // TODO: make this a array of 16 element not 17
+    stack: [u16; 16],
     vx: [u8; 16],
     pub pc: u16,
     sp: usize,
@@ -22,7 +22,7 @@ impl Cpu
     {
         Cpu 
         {
-            stack: [0; 17],
+            stack: [0; 16],
             vx: [0; 16],
             pc: PROGRAM_START,
             sp: 0,
@@ -253,7 +253,7 @@ impl Cpu
                             ram.write_byte(self.i + j as u16, self.read_register(j));
                         }
 
-                        self.i += x as u16 + 1; // TODO: check if this is necessary
+                        // self.i += x as u16 + 1;
                     }, 
 
                     0x65 => {
@@ -263,7 +263,7 @@ impl Cpu
                             self.write_register(j, value);
                         }
                         
-                        self.i += x as u16 + 1; // TODO: check if this is necessary
+                        // self.i += x as u16 + 1;
                     },  
 
                     _ => println!("unknown instruction in 0xF")
@@ -274,7 +274,7 @@ impl Cpu
             _ => println!("not implementaed yet")
         }
 
-        self.pc += 2; // TODO: recheck this: this shouldn't always run, when self.pc is set in the instruction, this should be skipped
+        self.pc += 2;
     }
 }
 
