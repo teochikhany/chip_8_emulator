@@ -202,7 +202,7 @@ impl Cpu
                 for byte in sprite
                 {
                     let mut column = 0;
-                    let byte_str = format!("{:0>8b}", byte);
+                    let byte_str = format!("{:0>8b}", byte);            // FIXME: this can cause problems
 
                     for bite in byte_str.chars()
                     {
@@ -223,7 +223,7 @@ impl Cpu
                 match kk
                 {
                     0xA1 => { self.pc += 2; return; },  // FIXME: not implemented
-                    0x9E => { return; },                // FIXME: not implemented
+                    0x9E => {},                         // FIXME: not implemented
                     _ => println!("unknown instruction in 0xE")
                 }
             },
@@ -233,7 +233,7 @@ impl Cpu
                 match kk
                 {
                     0x07 => { self.write_register(x, self.dt) }, 
-                    0x1A => println!("0x1A, waiting key press"),    // FIXME: not implemented
+                    0x0A => {},                                     // FIXME: not implemented
                     0x15 => { self.dt = self.read_register(x) }, 
                     0x18 => { self.st = self.read_register(x) }, 
                     0x1E => { self.i += self.read_register(x) as u16 }, 
@@ -266,7 +266,7 @@ impl Cpu
                         // self.i += x as u16 + 1;
                     },  
 
-                    _ => println!("unknown instruction in 0xF")
+                    _ => println!("unknown instruction in 0xF, {:X}", kk)
                 }
             }
 
