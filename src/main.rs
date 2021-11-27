@@ -9,6 +9,7 @@ use std::io::Read;
 use ram::Ram;
 use cpu::Cpu;
 use display::Display;
+
 use std::time::{Duration, Instant};
 
 

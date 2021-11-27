@@ -220,10 +220,23 @@ impl Cpu
 
             0xE =>
             {
+                let vx = self.read_register(x);
                 match kk
                 {
-                    0xA1 => { self.pc += 2; return; },  // FIXME: not implemented
-                    0x9E => {},                         // FIXME: not implemented
+                    0x9E => { 
+                        if display.is_pressed(vx)
+                        {
+                            self.pc += 2;
+                        }
+                    },
+                                            
+                    0xA1 => { 
+                        if !display.is_pressed(vx)
+                        {
+                            self.pc += 2;
+                        } 
+                    },
+
                     _ => println!("unknown instruction in 0xE")
                 }
             },
@@ -233,7 +246,7 @@ impl Cpu
                 match kk
                 {
                     0x07 => { self.write_register(x, self.dt) }, 
-                    0x0A => {},                                     // FIXME: not implemented
+                    0x0A => { let res = display.wait_key(); self.write_register(x, res) },  // FIXME: not implemented
                     0x15 => { self.dt = self.read_register(x) }, 
                     0x18 => { self.st = self.read_register(x) }, 
                     0x1E => { self.i += self.read_register(x) as u16 }, 
