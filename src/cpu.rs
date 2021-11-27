@@ -222,8 +222,8 @@ impl Cpu
             {
                 match kk
                 {
-                    0xA1 => {}, //println!("checking keyboard"),          // FIXME: not implemented
-                    0x9E => {}, // println!("checking keyboard 2"),        // FIXME: not implemented
+                    0xA1 => { self.pc += 2; return; },  // FIXME: not implemented
+                    0x9E => { return; },                // FIXME: not implemented
                     _ => println!("unknown instruction in 0xE")
                 }
             },
